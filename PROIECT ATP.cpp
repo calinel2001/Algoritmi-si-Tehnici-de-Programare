@@ -1,4 +1,4 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
@@ -13,11 +13,33 @@ typedef struct {
 	int note[15];
 } student;
 
+//CULORI
+void red() {
+	printf("\033[1;31m");
+}
+
+void yellow()
+{
+
+  printf("\033[1;33m");
+}
+
+void green()
+{
+	printf("\033[0;32m");
+}
+
+void reset() {
+	printf("\033[0m");
+}
+
+//SFARSIT CULORI
+
+
 //1
 void crearefisierbinar(FILE* f, char* denumire)
 {
 	student x;
-
 	int numarmatricol;
 	printf("Numarul matricol: ");
 	scanf("%d", &x.numarMatricol);
@@ -47,7 +69,6 @@ void crearefisierbinar(FILE* f, char* denumire)
 		printf("\nNumarul matricol: ");
 		scanf("%d", &x.numarMatricol);
 	}
-	fclose(f);
 }
 //2
 void convertireintext(FILE* f, char* denumire)
@@ -73,8 +94,6 @@ void convertireintext(FILE* f, char* denumire)
 			fprintf(g, "\n");
 			fread(&x, sizeof(student), 1, f);
 		}
-		fclose(f);
-		fclose(g);
 	}
 }
 //3
@@ -100,12 +119,11 @@ void selectiedupanrmatricol(FILE* f, char* denumire) {
 			fread(&x, sizeof(student), 1, f);
 		}
 		if (gasit == 0)
-			printf("Teapa fraere -selectie dupa numar matricol");
+			printf("\nStudentul nu a fost gasit -selectie dupa numar matricol\n");
 
 		printf("\nNumar matricol cautat: ");
 		scanf("%d", &nrmcautat);
 	}
-	fclose(f);
 }
 //4
 void selectiedupagrupa_fisier(FILE* f, char* denumire)
@@ -124,9 +142,9 @@ void selectiedupagrupa_fisier(FILE* f, char* denumire)
 		printf("Grupa cautata: ");
 		scanf("%d", &grupacautata);
 
-		fread(&x, sizeof(student), 1, f);
 		while (!feof(stdin) && grupacautata != -1)
 		{
+			fread(&x, sizeof(student), 1, f);
 			rewind(f);
 			gasit = 0;
 			while (!feof(f))
@@ -141,12 +159,12 @@ void selectiedupagrupa_fisier(FILE* f, char* denumire)
 				fread(&x, sizeof(student), 1, f);
 			}
 			if (gasit == 0)
-				printf("Nu s-a gasit");
+				printf("\nNu s-a gasit\n");
 
 			printf("\nGrupa cautata: ");
 			scanf("%d", &grupacautata);
 		}
-		fclose(f); fclose(g);
+		fclose(g);
 	}
 }
 //5
@@ -184,7 +202,6 @@ void adaugare_modificare_articol(FILE* f, char* denumire) {
 		printf("\nNumar matricol cautat: ");
 		scanf("%d", &nrmcautat);
 	}
-	fclose(f);
 }
 //6
 void modificare_selectie(FILE* f, char* denumire)
@@ -221,7 +238,6 @@ void modificare_selectie(FILE* f, char* denumire)
 		printf("\nIntroduceti grupa cautata: ");
 		scanf("%d", &grupacautata);
 	}
-	fclose(f);
 }
 //7
 void adaugare_infisier(FILE* f, char* denumire)
@@ -250,7 +266,6 @@ void adaugare_infisier(FILE* f, char* denumire)
 		printf("\nNumar matricol: ");
 		scanf("%d", &x.numarMatricol);
 	}
-	fclose(f);
 }
 //8
 void stergere_dinfisier(FILE* f, char* denumire) {
@@ -267,14 +282,13 @@ void stergere_dinfisier(FILE* f, char* denumire) {
 	{
 		printf("\nNumarul matricol cautat: ");
 		scanf("%d", &nrmcautat);
-	
 		fread(&x, sizeof(student), 1, f);
-		while (!feof(f)) 
+		while (!feof(f))
 		{
 			if (nrmcautat != x.numarMatricol)
 			{
 				fwrite(&x, sizeof(student), 1, g);
-		     }
+			}
 			fread(&x, sizeof(student), 1, f);
 		}
 		fclose(f);
@@ -291,6 +305,7 @@ void stergere_dinfisier(FILE* f, char* denumire) {
 
 int main()
 {
+	green();
 	printf("\n\nCodurile pentru operatii sunt: ");
 	printf("\n '1' -Pentru crearea unui fisier binar  ");
 	printf("\n '2' -Pentru a converti fisierul binar intr-un fisier text");
@@ -300,129 +315,145 @@ int main()
 	printf("\n '6'- Sa se scrie programul pentru adaugarea punctului din oficiu la nota la ATP pentru studentii din grupa al carei numar este introdus de la tastatura");
 	printf("\n '7'- Sa se scrie programul pentru adaugarea unui articol in fisier");
 	printf("\n '8'-Sa se scrie programul care realizeaza stergerea unor articole din fisierul secvential ");
+	reset();
 
 	FILE* f;
 	student x;
 	char answer;
 
-beginning:
+  do
+  {
+		printf("\033[0;33m");
+		printf("\n\n\nIntroduceti codul pentru operatia pe care vreti sa o faceti: ");
+		printf("\033[0m");
+		int cod;
+		scanf("%d", &cod);
 
-	printf("\n\n\nIntroduceti codul pentru operatia pe care vreti sa o faceti: ");
-	int cod;
-	scanf("%d", &cod);
+     switch (cod)
+	 {
+		  case 1: 
+		  {
+			  //CREARE FISIER BINAR
+			  char numefisierbinar[20];
+			  red();
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  reset();
+			  f = fopen(numefisierbinar, "wb");
+			  if (!f) { printf("\nNu s-a putut deschide din main,cod=1"); }
+			  else {
+				  crearefisierbinar(f, numefisierbinar);
+				  fclose(f);
+			  }
+		  } break;
 
-	{
-		if (cod == 1)
-		{
-			//CREARE FISIER BINAR
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "wb");
-			if (!f) { printf("\nNu s-a putut deschide din main,cod=1"); }
-			else {
-				crearefisierbinar(f, numefisierbinar);
-			}
-		}
-		if (cod == 2)
-		{
-			//CONSULTARE INTEGRALA
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=2");
-			else
-				convertireintext(f, numefisierbinar);
-		}
-		if (cod == 3)
-		{
-			//Afisarea datelor despre studentii ale caror numere matricole sunt introduse de la tastatura
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=3");
-			else
-				selectiedupanrmatricol(f, numefisierbinar);
-		}
+		  case 2:
+		  {
+			  //CONSULTARE INTEGRALA
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=2");
+			  else
+				  convertireintext(f, numefisierbinar);
+			  fclose(f);
+		  }break;
 
-		if (cod == 4)
-		{
-			//Să se scrie programul care listează, în fişiere text, situaţia studenţilor din grupele ale căror numere se introduc de la tastatură
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=4");
-			else
-				selectiedupagrupa_fisier(f, numefisierbinar);
-		}
+		  case 3:
+		  {
+			  //Afisarea datelor despre studentii ale caror numere matricole sunt introduse de la tastatura
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=3");
+			  else
+				  selectiedupanrmatricol(f, numefisierbinar);
+			  fclose(f);
+		  }break;
 
-		if (cod == 5)
-		{
-			//Sa se scrie programul pentru adaugarea notei la disciplina algoritmi si tehnici de programare pentru studenul al
-			// carui numar matricol este introdus de la tastatura
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb+");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=5");
-			else
-				adaugare_modificare_articol(f, numefisierbinar);
-		}
+		  case 4:
+		  {
+			  //Să se scrie programul care listează, în fişiere text, situaţia studenţilor din grupele ale căror numere se introduc de la tastatură
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=4");
+			  else
+				  selectiedupagrupa_fisier(f, numefisierbinar);
+			  fclose(f);
+		  }break;
 
-		if (cod == 6)
-		{
-			//Să se scrie programul pentru adăugarea punctului din oficiu la nota la ATP pentru studenţii
-			/// din grupa al cărei număr este introdus de la tastatură.
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb+");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=6");
-			else
-				modificare_selectie(f, numefisierbinar);
-		}
+		  case 5:
+		  {
+			  //Sa se scrie programul pentru adaugarea notei la disciplina algoritmi si tehnici de programare pentru studenul al
+			  // carui numar matricol este introdus de la tastatura
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb+");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=5");
+			  else
+				  adaugare_modificare_articol(f, numefisierbinar);
+			  fclose(f);
+		  }break;
 
-		if (cod == 7)
-		{
-			//Adaugare
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb+");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=7");
-			else
-				adaugare_infisier(f, numefisierbinar);
-		}
+		  case 6:
+		  {
+			  //Să se scrie programul pentru adăugarea punctului din oficiu la nota la ATP pentru studenţii
+			  /// din grupa al cărei număr este introdus de la tastatură.
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb+");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=6");
+			  else
+				  modificare_selectie(f, numefisierbinar);
+			  fclose(f);
+		  }break;
 
-		if (cod == 8)
-		{
-			//Stergere
-			char numefisierbinar[20];
-			printf("\nIntroduceti numele fisierului binar:  ");
-			scanf("%s", numefisierbinar);
-			f = fopen(numefisierbinar, "rb+");
-			if (!f)
-				printf("\nNu s-a putut deschide din  main cod=7");
-			else
-				stergere_dinfisier(f, numefisierbinar);
-		}
+		  case 7:
+		  {
+			  //Adaugare
+			  char numefisierbinar[20];
+			  printf("\nIntroduceti numele fisierului binar:  ");
+			  scanf("%s", numefisierbinar);
+			  f = fopen(numefisierbinar, "rb+");
+			  if (!f)
+				  printf("\nNu s-a putut deschide din  main cod=7");
+			  else
+				  adaugare_infisier(f, numefisierbinar);
+			  fclose(f);
+		  }break;
+
+		  case 8:
+		  {
+			   //Stergere
+			   char numefisierbinar[20];
+			   printf("\nIntroduceti numele fisierului binar:  ");
+			   scanf("%s", numefisierbinar);
+			   f = fopen(numefisierbinar, "rb+");
+			   if (!f)
+				   printf("\nNu s-a putut deschide din  main cod=8");
+			   else
+				   stergere_dinfisier(f, numefisierbinar);
+			   fclose(f);
+		   } break;
+
+		  red();
+		   default: printf("\n\nS-a produs o eroare");
+			   reset();
+     }
 
 		printf("\nPress y to continue. Press any Key To Exit ");
-		
-		//O litera/cifra, nu ENTER pentru ca nu o sa mearga
-		scanf(" %c", &answer); 
-		if (answer == 'y' || answer == 'Y')
-			goto beginning;
-		else
-			exit(0);
-	}
+		scanf(" %c", &answer);
+
+  }  while (answer == 'y' || answer == 'Y');
 }
