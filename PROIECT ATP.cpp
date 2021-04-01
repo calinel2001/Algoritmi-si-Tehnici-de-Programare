@@ -417,6 +417,8 @@ beginning:
 		}
 
 		printf("\nPress y to continue. Press any Key To Exit ");
+		
+		//O litera/cifra, nu ENTER pentru ca nu o sa mearga
 		scanf(" %c", &answer); 
 		if (answer == 'y' || answer == 'Y')
 			goto beginning;
